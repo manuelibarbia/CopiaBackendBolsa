@@ -208,11 +208,11 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
 
         [Authorize]
         [HttpGet("{studentId}/Offers")]
-        public ActionResult GetStudentToOffers(int studentId)
+        public ActionResult GetStudentOffers(int studentId)
         {
             try
             {
-                var offers = _studentOfferRepository.GetStudentToOffers(studentId);
+                var offers = _studentOfferRepository.GetStudentOffers(studentId);
                 return Ok(offers);
             }
             catch (Exception ex)

@@ -81,28 +81,20 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             _context.SaveChanges();
         }
 
-        public List<Offer> GetStudentToOffers(int studentId)
+        public List<StudentOffer> GetStudentOffers(int studentId)
         {
-            var offers = _context.StudentOffers
+            var studentOffers = _context.StudentOffers
                 .Where(so => so.StudentId == studentId && so.StudentOfferIsActive == true && so.Offer.OfferIsActive == true)
-                .Select(so => new Offer
+                .Include(so => so.Offer)
+                .ThenInclude(o => o.Company)
+                .Select(so => new StudentOffer
                 {
-                    OfferId = so.Offer.OfferId,
-                    OfferTitle = so.Offer.OfferTitle,
-                    OfferSpecialty = so.Offer.OfferSpecialty,
-                    OfferDescription = so.Offer.OfferDescription,
-                    CreatedDate = so.Offer.CreatedDate,
-                    OfferIsActive = so.Offer.OfferIsActive,
-                    Company = new Company
-                    {
-                        CompanyName = so.Offer.Company.CompanyName,
-                        CompanyLocation = so.Offer.Company.CompanyLocation,
-                        CompanyLine = so.Offer.Company.CompanyLine
-                    },
+                    Offer = so.Offer,
+                    ApplicationDate = so.ApplicationDate,
                 })
                 .ToList();
 
-            return offers;
+            return studentOffers;
         }
 
         public List<StudentOffer> GetStudentOfferHistory(int studentId) //FUNCIÓN NUEVA
