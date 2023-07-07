@@ -49,6 +49,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository
                 return _context.Offers
                 .Where(o => o.OfferIsActive == true)
                 .Include(o => o.Company)
+                .OrderByDescending(o => o.CreatedDate)
                 .ToList();
             }
             catch

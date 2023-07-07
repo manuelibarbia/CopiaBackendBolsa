@@ -39,6 +39,12 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository
                     throw new Exception("Empresa no encontrada");
                 }
                 company.UserIsActive = false;
+                var companyOffers = _context.Offers.Where(o => o.CompanyId == id).ToList();
+                
+                foreach (var offer in companyOffers)
+                {
+                    offer.OfferIsActive = false;
+                }
                 _context.SaveChanges();
             }
             catch

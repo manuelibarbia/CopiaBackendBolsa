@@ -87,6 +87,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
                 .Where(so => so.StudentId == studentId && so.StudentOfferIsActive == true && so.Offer.OfferIsActive == true)
                 .Include(so => so.Offer)
                 .ThenInclude(o => o.Company)
+                .OrderByDescending(so => so.ApplicationDate)
                 .Select(so => new StudentOffer
                 {
                     Offer = so.Offer,
@@ -103,6 +104,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
                 .Where(so => so.StudentId == studentId)
                 .Include(so => so.Offer)
                 .ThenInclude(o => o.Company)
+                .OrderByDescending(so => so.ApplicationDate)
                 .Select(so => new StudentOffer
                 {
                     Offer = so.Offer,
