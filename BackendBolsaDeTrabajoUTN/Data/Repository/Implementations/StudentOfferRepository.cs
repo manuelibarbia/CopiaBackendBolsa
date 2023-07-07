@@ -46,6 +46,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
                 else
                 {
                     _context.StudentOffers.First(so => so.StudentId == student.UserId && so.OfferId == offer.OfferId).StudentOfferIsActive = true;
+                    _context.StudentOffers.First(so => so.StudentId == student.UserId && so.OfferId == offer.OfferId).ApplicationDate = DateTime.Now;
                 }
                 _context.SaveChanges();
 
