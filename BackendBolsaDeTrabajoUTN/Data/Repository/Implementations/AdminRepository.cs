@@ -144,7 +144,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             }
         }
 
-        public List<CVFile> GetPendingCVFiles() //No implementado en front
+        public List<Student> GetStudentsWithPendingCV() //No implementado en front
         {
             try
             {
@@ -153,7 +153,12 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
                 {
                     throw new Exception("No hay CVs pendientes de confirmar");
                 }
-                return pendingCvFiles;
+                var studentsWithPendingCV = new List<Student>();
+                foreach (CVFile pendingCV in pendingCvFiles)
+                {
+                    studentsWithPendingCV.Add(_context.Students.First(s => s.UserId == pendingCV.StudentId));
+                }
+                return studentsWithPendingCV;
             }
             catch (Exception ex)
             {
