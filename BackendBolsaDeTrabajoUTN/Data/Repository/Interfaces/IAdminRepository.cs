@@ -14,7 +14,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Interfaces
         public void DeleteOffer(int id);
         List<Company> GetPendingCompanies();
         public void UpdatePendingCompany(int companyId);
-        public List<CVFile> GetPendingCVFiles();
+        public List<Student> GetStudentsWithPendingCV();
         public void UpdatePendingCVFile(int CVId);
     }
 }

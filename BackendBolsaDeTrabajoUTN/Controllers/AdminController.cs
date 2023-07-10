@@ -260,16 +260,16 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
 
         [Authorize]
         [HttpGet]
-        [Route("getPendingCVFiles")]
-        public IActionResult GetPendingCVFiles() //No implementado en front
+        [Route("getStudentsWithPendingCV")]
+        public IActionResult GetStudentsWithPendingCV() //No implementado en front
         {
             var userType = User.Claims.FirstOrDefault(c => c.Type == "userType")?.Value;
             if (userType == "Admin")
             {
                 try
                 {
-                    List<CVFile> pendingCvFiles = _adminRepository.GetPendingCVFiles();
-                    return Ok(pendingCvFiles);
+                    List<Student> studentsWithPendingCV = _adminRepository.GetStudentsWithPendingCV();
+                    return Ok(studentsWithPendingCV);
                 }
                 catch (Exception ex)
                 {
@@ -278,7 +278,7 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
             }
             else
             {
-                return BadRequest("El usuario no está autorizado para listar CVs");
+                return BadRequest("El usuario no está autorizado para listar estudiantes");
             }
         }
 

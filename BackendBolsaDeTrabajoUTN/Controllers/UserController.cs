@@ -13,7 +13,6 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -33,17 +32,17 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
 
             if (user == null)
             {
-                return NotFound(); // El usuario no existe
+                return NotFound();
             }
 
             string newPassword = GenerateRandomPassword();
 
-            user.Password = newPassword; // Actualiza la contraseña del usuario en la base de datos
-            _context.SaveChanges(); // Guarda los cambios en la base de datos
+            user.Password = newPassword;
+            _context.SaveChanges();
             
             SendEmail(user.UserEmail, "Recuperación de contraseña", $"Hola {user.UserName}. Tu nueva contraseña es: {newPassword}");
 
-            return Ok("Cambio correcto"); // Opcionalmente, puedes devolver la nueva contraseña generada como respuesta
+            return Ok("Cambio correcto, revisa tu correo principal");
         }
 
 
@@ -89,9 +88,3 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
         }
     }
 }
-
-
-
-
-
-
