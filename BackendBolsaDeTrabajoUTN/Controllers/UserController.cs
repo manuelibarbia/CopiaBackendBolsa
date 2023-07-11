@@ -8,7 +8,7 @@ using SendGrid.Helpers.Mail;
 using SendGrid;
 using DotNetEnv;
 using BackendBolsaDeTrabajoUTN.Helpers;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackendBolsaDeTrabajoUTN.Controllers
 {
@@ -25,6 +25,7 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpPut]
         [Route("changePassword/{userId}")]
         public IActionResult ChangePassword(int userId, AddPasswordRequest request)
@@ -39,10 +40,7 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
                     {
                         throw new Exception("La contraseña actual ingresada no es correcta");
                     }
-                    if (request.NewPassword != request.ConfirmNewPassword)
-                    {
-                        throw new Exception("Error al confirmar contrasñea, asegúrese de que coincidan los campos");
-                    }
+                    ValidatePassword(user.Password, request.NewPassword, request.ConfirmNewPassword, user.UserName);
                     _userRepository.SaveNewPassword(userId, request.NewPassword);
                     return Ok(new { message = "Contraseña cambiada exitosamente" });
                 }
@@ -114,10 +112,50 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
             }
             catch (Exception ex)
             {
-                // Registra el error o realiza alguna acción de manejo de errores adecuada
                 Console.WriteLine($"Error al enviar el correo electrónico: {ex.Message}");
             }
-           
+        }
+
+        [NonAction]
+        public void ValidatePassword(string currentPassword, string newPassword, string confirmPassword, string userName)
+        {
+            try
+            {
+                if (newPassword.Length < 8)
+                {
+                    throw new Exception("Contraseña insegura, debe tener al menos 8 caracteres");
+                }
+
+                bool hasUpperCase = newPassword.Any(char.IsUpper);
+                bool hasLowerCase = newPassword.Any(char.IsLower);
+                bool hasDigit = newPassword.Any(char.IsDigit);
+                bool hasSpecialChar = newPassword.Any(c => !char.IsLetterOrDigit(c));
+
+                if (!hasUpperCase || !hasLowerCase || !hasDigit || !hasSpecialChar)
+                {
+                    throw new Exception("Contraseña insegura, debe contener al menos una letra mayúscula, una minúscula, un número y un caracter especial");
+                }
+
+                if (newPassword.ToLower() == userName.ToLower())
+                {
+                    throw new Exception("Contraseña insegura, no puede ser igual al nombre de usuario");
+                }
+
+                var hashedNewPassword = Security.CreateSHA512(newPassword);
+                if (hashedNewPassword == currentPassword)
+                {
+                    throw new Exception("Contraseña insegura, no puede ser igual a la actual");
+                }
+
+                if (newPassword != confirmPassword)
+                {
+                    throw new Exception("Los campos introducidos de contraseña no coinciden");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
