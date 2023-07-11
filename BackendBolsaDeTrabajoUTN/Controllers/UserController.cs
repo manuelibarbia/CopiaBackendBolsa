@@ -7,6 +7,7 @@ using BackendBolsaDeTrabajoUTN.DBContexts;
 using SendGrid.Helpers.Mail;
 using SendGrid;
 using DotNetEnv;
+using BackendBolsaDeTrabajoUTN.Helpers;
 
 
 namespace BackendBolsaDeTrabajoUTN.Controllers
@@ -22,6 +23,38 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
         {
             _userRepository = userRepository;
             _context = context;
+        }
+
+        [HttpPut]
+        [Route("changePassword/{userId}")]
+        public IActionResult ChangePassword(int userId, AddPasswordRequest request)
+        {
+            var user = _userRepository.GetUserById(userId);
+            if (user != null)
+            {
+                try
+                {
+                    var hashedCurrentPassword = Security.CreateSHA512(request.CurrentPassword);
+                    if (hashedCurrentPassword != user.Password)
+                    {
+                        throw new Exception("La contraseña actual ingresada no es correcta");
+                    }
+                    if (request.NewPassword != request.ConfirmNewPassword)
+                    {
+                        throw new Exception("Error al confirmar contrasñea, asegúrese de que coincidan los campos");
+                    }
+                    _userRepository.SaveNewPassword(userId, request.NewPassword);
+                    return Ok(new { message = "Contraseña cambiada exitosamente" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return NotFound("Usuario no econtrado");
+            }
         }
 
         [HttpPost]
