@@ -115,18 +115,19 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
                         File = fileBytes,
                         StudentId = studentId,
                         Student = _context.Students.FirstOrDefault(s => s.UserId == studentId),
-                        CVPendingConfirmation = false,
+                        CVPendingConfirmation = true,
                         CVIsActive = true,
                     };
 
                 var existentCvFile = _context.CVFiles.FirstOrDefault(cv => cv.StudentId == newCvFile.StudentId);
                 if (existentCvFile != null)
                 {
+                    existentCvFile.CVId = existentCvFile.CVId;
                     existentCvFile.Name = newCvFile.Name;
                     existentCvFile.File = newCvFile.File;
                     existentCvFile.Student = newCvFile.Student;
-                    existentCvFile.CVPendingConfirmation = false;
-                    existentCvFile.CVId = existentCvFile.CVId;
+                    existentCvFile.CVPendingConfirmation = true;
+                    existentCvFile.CVIsActive = true;
                 }
                 else
                 {
@@ -179,9 +180,29 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             }
         }
 
+        public bool CheckCVIsRejected(int studentId)
+        {
+            var cvFile = _context.CVFiles.FirstOrDefault(cv => cv.StudentId == studentId && cv.CVIsActive == false && cv.CVPendingConfirmation == true);
+            if (cvFile == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public bool CheckCVExists(int studentId)
         {
             var cvFile = _context.CVFiles.FirstOrDefault(cv => cv.StudentId == studentId && cv.CVIsActive == true);
+            if (cvFile == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool CheckCVIsAccepted(int studentId)
+        {
+            var cvFile = _context.CVFiles.FirstOrDefault(cv => cv.StudentId == studentId && cv.CVIsActive == true && cv.CVPendingConfirmation == false);
             if (cvFile == null)
             {
                 return false;

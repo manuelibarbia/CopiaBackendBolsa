@@ -144,7 +144,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             }
         }
 
-        public List<Student> GetStudentsWithPendingCV() //No implementado en front
+        public List<Student> GetStudentsWithPendingCV()
         {
             try
             {
@@ -166,16 +166,34 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             }
         }
 
-        public void UpdatePendingCVFile(int CVId) //No implementado en front
+        public void AcceptPendingCVFile(int studentId) //No implementado en front
         {
             try
             {
-                CVFile cVFile = _context.CVFiles.FirstOrDefault(cv => cv.CVId == CVId);
+                CVFile cVFile = _context.CVFiles.FirstOrDefault(cv => cv.StudentId == studentId);
                 if (cVFile == null)
                 {
                     throw new Exception("El CV no existe");
                 }
                 cVFile.CVPendingConfirmation = false;
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void DeletePendingCVFile(int studentId)
+        {
+            try
+            {
+                CVFile cVFile = _context.CVFiles.FirstOrDefault(cv => cv.StudentId == studentId);
+                if (cVFile == null)
+                {
+                    throw new Exception("El CV no existe");
+                }
+                cVFile.CVIsActive = false;
                 _context.SaveChanges();
             }
             catch (Exception ex)

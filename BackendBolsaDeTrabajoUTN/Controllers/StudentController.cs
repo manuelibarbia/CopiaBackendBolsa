@@ -180,10 +180,20 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
         {
             try
             {
+                var cvIsRejected = _studentRepository.CheckCVIsRejected(studentId);
+                if (cvIsRejected == true)
+                {
+                    throw new Exception("Estás intentando postularte con un CV rechazado por el administrador, cargá uno válido");
+                }
                 var cvExists = _studentRepository.CheckCVExists(studentId);
                 if (cvExists == false)
                 {
                     throw new Exception("Para postularte a una oferta, primero tenés que cargar tu CV");
+                }
+                var cvIsAccepted = _studentRepository.CheckCVIsAccepted(studentId);
+                if (cvIsAccepted == false)
+                {
+                    throw new Exception("Tu CV debe ser confirmado por el administrador");
                 }
                 _studentOfferRepository.AddStudentToOffer(offerId, studentId);
                 return Ok(new { message = "Registro en la oferta exitoso" });
