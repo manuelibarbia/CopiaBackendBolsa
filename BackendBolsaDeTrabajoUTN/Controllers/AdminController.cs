@@ -261,7 +261,7 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
         [Authorize]
         [HttpGet]
         [Route("getStudentsWithPendingCV")]
-        public IActionResult GetStudentsWithPendingCV() //No implementado en front
+        public IActionResult GetStudentsWithPendingCV()
         {
             var userType = User.Claims.FirstOrDefault(c => c.Type == "userType")?.Value;
             if (userType == "Admin")
@@ -284,16 +284,40 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
 
         [Authorize]
         [HttpPut]
-        [Route("updatePendingCVFile/{CVId}")]
-        public IActionResult UpdatePendingCVFile (int CVId)
+        [Route("acceptPendingCVFile/{studentId}")]
+        public IActionResult AcceptPendingCVFile (int studentId)
         {
             var userType = User.Claims.FirstOrDefault(c => c.Type == "userType")?.Value;
             if (userType == "Admin")
             {
                 try
                 {
-                    _adminRepository.UpdatePendingCVFile(CVId);
-                    return Ok(new { Mesage = "CV confirmado" });
+                    _adminRepository.AcceptPendingCVFile(studentId);
+                    return Ok(new { Message = "CV confirmado" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("El usuario no está autorizado para modificar estado de CVs");
+            } 
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("deletePendingCVFile/{studentId}")]
+        public IActionResult DeletePendingCVFile(int studentId)
+        {
+            var userType = User.Claims.FirstOrDefault(c => c.Type == "userType")?.Value;
+            if (userType == "Admin")
+            {
+                try
+                {
+                    _adminRepository.AcceptPendingCVFile(studentId);
+                    return Ok(new { Message = "CV borrado" });
                 }
                 catch (Exception ex)
                 {
@@ -304,7 +328,6 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
             {
                 return BadRequest("El usuario no está autorizado para modificar estado de CVs");
             }
-                
         }
 
         [NonAction]
