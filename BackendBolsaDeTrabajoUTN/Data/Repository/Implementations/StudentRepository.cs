@@ -168,10 +168,6 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
                 {
                     throw new Exception("No se encontró el CV del estudiante");
                 }
-                if (cVFile.File != null && cVFile.CVPendingConfirmation == true)
-                {
-                    throw new Exception("El CV está pendiente de confirmación");
-                }
                 return cVFile;
             }
             catch (Exception ex)

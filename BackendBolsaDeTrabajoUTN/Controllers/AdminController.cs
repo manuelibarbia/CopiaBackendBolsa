@@ -283,6 +283,30 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        [Route("getStudentCV/{studentId}")]
+        public ActionResult GetStudentCV(int studentId)
+        {
+            var userType = User.Claims.FirstOrDefault(c => c.Type == "userType")?.Value;
+            if (userType == "Admin")
+            {
+                try
+                {
+                    var cv = _adminRepository.GetStudentCV(studentId);
+                    return File(cv.File, "application/octet-stream", cv.Name);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("El usuario no está autorizado para descargar el CV de los estudiantes");
+            }
+        }
+
+        [Authorize]
         [HttpPut]
         [Route("acceptPendingCVFile/{studentId}")]
         public IActionResult AcceptPendingCVFile (int studentId)

@@ -166,7 +166,24 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             }
         }
 
-        public void AcceptPendingCVFile(int studentId) //No implementado en front
+        public CVFile GetStudentCV(int studentId)
+        {
+            try
+            {
+                CVFile cVFile = _context.CVFiles.FirstOrDefault(c => c.StudentId == studentId && c.CVIsActive == true);
+                if (cVFile == null)
+                {
+                    throw new Exception("No se encontró el CV del estudiante");
+                }
+                return cVFile;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void AcceptPendingCVFile(int studentId)
         {
             try
             {
