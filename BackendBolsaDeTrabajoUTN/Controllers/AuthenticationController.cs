@@ -38,9 +38,14 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
             .Where(u => u.UserId == user.UserId && u.CompanyPendingConfirmation)
             .FirstOrDefault();
 
+            if (user.UserType == "Company" && company != null && user.UserIsActive == false && company.CompanyPendingConfirmation)
+            {
+                return BadRequest(new { error = "Su cuenta de empresa fue rechazada por el administrador, cree una nueva" });
+            }
+
             if (user.UserIsActive == false )
             {
-                return BadRequest(new { error = "Su cuenta no extiste, fue eliminada" });
+                return BadRequest(new { error = "Su cuenta no existe, fue eliminada" });
             }
 
             if (user.UserType == "Company" && company != null && company.CompanyPendingConfirmation)

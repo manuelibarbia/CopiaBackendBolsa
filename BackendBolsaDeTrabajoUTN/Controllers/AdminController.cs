@@ -259,6 +259,30 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
         }
 
         [Authorize]
+        [HttpDelete]
+        [Route("deletePendingCompany/{companyId}")]
+        public IActionResult DeletePendingCompany(int companyId)
+        {
+            var userType = User.Claims.FirstOrDefault(c => c.Type == "userType")?.Value;
+            if (userType == "Admin")
+            {
+                try
+                {
+                    _adminRepository.DeletePendingCompany(companyId);
+                    return Ok(new { Message = "Empresa borrada" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("El usuario no está autorizado para borrar empresas");
+            }
+        }
+
+        [Authorize]
         [HttpGet]
         [Route("getStudentsWithPendingCV")]
         public IActionResult GetStudentsWithPendingCV()
