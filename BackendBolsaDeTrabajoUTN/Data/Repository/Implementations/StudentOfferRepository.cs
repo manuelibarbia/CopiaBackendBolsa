@@ -27,7 +27,7 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             var isAssociated = _context.StudentOffers.Any(os => os.StudentId == student.UserId && os.OfferId == offerId && os.StudentOfferIsActive == true);
             if (isAssociated)
             {
-                throw new Exception("El estudiante ya está asociado a esta oferta.");
+                throw new Exception("Ya estás asociado a esta oferta.");
             }
             var studentOfferExists = _context.StudentOffers.FirstOrDefault(os => os.StudentId == student.UserId && os.OfferId == offerId);
             try

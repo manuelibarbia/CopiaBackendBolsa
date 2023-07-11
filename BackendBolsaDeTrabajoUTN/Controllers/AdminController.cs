@@ -316,7 +316,7 @@ namespace BackendBolsaDeTrabajoUTN.Controllers
             {
                 try
                 {
-                    _adminRepository.AcceptPendingCVFile(studentId);
+                    _adminRepository.DeletePendingCVFile(studentId);
                     return Ok(new { Message = "CV borrado" });
                 }
                 catch (Exception ex)
