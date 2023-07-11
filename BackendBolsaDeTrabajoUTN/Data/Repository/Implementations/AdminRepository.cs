@@ -144,6 +144,24 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             }
         }
 
+        public void DeletePendingCompany(int companyId)
+        {
+            try
+            {
+                Company company = _context.Companies.FirstOrDefault(c => c.UserId == companyId);
+                if (company == null)
+                {
+                    throw new Exception("La empresa no existe");
+                }
+                company.UserIsActive = false;
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public List<Student> GetStudentsWithPendingCV()
         {
             try
