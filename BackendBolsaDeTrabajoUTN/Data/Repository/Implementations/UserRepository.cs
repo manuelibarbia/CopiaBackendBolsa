@@ -27,5 +27,28 @@ namespace BackendBolsaDeTrabajoUTN.Data.Repository.Implementations
             var user = _context.Users.SingleOrDefault(u => u.UserName == dto.UserName);
             return user ?? null;
         }
+
+        public User GetUserById(int userId)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+                if (user == null)
+                {
+                    throw new Exception("Usuario no encontrado");
+                }
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void SaveNewPassword(int userId, string newPassword)
+        {
+            _context.Users.First(u => u.UserId == userId).Password = newPassword;
+            _context.SaveChanges();
+        }
     }
 }
